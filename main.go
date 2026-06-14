@@ -10,9 +10,17 @@ import (
     _ "github.com/go-sql-driver/mysql"
 )
 
-func main() {
-    // ひとまず仮の空DBインスタンス（後ほどCloud SQLに接続させます）
-    var db *sql.DB
+func main() { // 👈 ここに { が必要です！
+    mysqlUser := os.Getenv("MYSQL_USER")
+    mysqlPwd := os.Getenv("MYSQL_PWD")
+    mysqlHost := os.Getenv("MYSQL_HOST")
+    mysqlDatabase := os.Getenv("MYSQL_DATABASE")
+
+    connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
+    db, err := sql.Open("mysql", connStr)
+    if err != nil {
+        log.Fatal(err)
+    }
 
     http.HandleFunc("/items", handler.GetItemsHandler(db))
 
