@@ -22,12 +22,12 @@ func main() {
         log.Fatal(err)
     }
 
-    // 👇 ここを追加！トップページ (/) にアクセスが来たときのお返事
+    // トップページ (/) にアクセスが来たときのお返事
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintln(w, "Hello Hackathon Backend!")
     })
 
-    // 既存の /items の処理
+    // 既存 of /items の処理
     http.HandleFunc("/items", handler.GetItemsHandler(db))
 
     port := os.Getenv("PORT")
