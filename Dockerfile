@@ -3,15 +3,15 @@ FROM golang:1.22-alpine AS builder
 
 WORKDIR /app
 
-# 一番外側にある go.mod と go.sum をコピー
-COPY go.mod go.sum ./
+# 小文字のフォルダの中にある go.mod をコピーする
+COPY hackathon-backend/go.mod ./
 RUN go mod download
 
-# すべてのソースコード（小文字のフォルダやmain.goなど）をコピー
+# すべてのファイルとフォルダ（main.goやhackathon-backendフォルダなど）をコピー
 COPY . .
 
-# ビルドを実行してバイナリを作成
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+# 小文字のフォルダの外（今の場所）にある main.go をビルドする
+RUN CGO_ENABLED=0 GOOS=linux go build -o main main.go
 
 # 2. 実行環境用コンテナ
 FROM alpine:3.19
