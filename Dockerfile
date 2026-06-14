@@ -3,12 +3,14 @@ FROM golang:1.22-alpine AS builder
 
 WORKDIR /app
 
-# 依存関係のキャッシュを利用するため、先にgo.modとgo.sumをコピー
+# 一番外側にある go.mod と go.sum をコピー
 COPY go.mod go.sum ./
 RUN go mod download
 
-# ソースコードをすべてコピーしてビルド
+# すべてのソースコード（小文字のフォルダやmain.goなど）をコピー
 COPY . .
+
+# ビルドを実行してバイナリを作成
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 # 2. 実行環境用コンテナ
