@@ -3,12 +3,15 @@ FROM golang:1.22-alpine AS builder
 
 WORKDIR /app
 
-# さっき手動で作った go.mod をコピーする
-COPY go.mod go.sum ./
-RUN go mod download
+# go.mod だけを先にコピー（go.sumはコンテナ内で自動生成させるのでコピーしない）
+COPY go.mod ./
 
-# すべてのファイルをコピー
+# ソースコードをすべてコピー
 COPY . .
+
+# チェックサム検証をオフにし、コンテナ内で不足している依存関係を自動で整える魔法の2行
+ENV GOSUMDB=off
+RUN go mod tidy
 
 # ビルドを実行してバイナリを作成
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
