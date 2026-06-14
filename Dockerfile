@@ -4,7 +4,7 @@ FROM golang:1.22-alpine AS builder
 WORKDIR /app
 
 # さっき手動で作った go.mod をコピーする
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # すべてのファイルをコピー
