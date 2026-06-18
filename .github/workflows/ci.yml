@@ -30,4 +30,5 @@ jobs:
         MYSQL_HOST: "localhost"
         MYSQL_DATABASE: "test_db"
       run: |
-        PYTHONPATH=. pytest
+        cd hackathon-backend
+        pytest
