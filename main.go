@@ -11,9 +11,23 @@ import (
 )
 
 func main() {
-    // ひとまず仮の空DBインスタンス（後ほどCloud SQLに接続させます）
-    var db *sql.DB
+    mysqlUser := os.Getenv("MYSQL_USER")
+    mysqlPwd := os.Getenv("MYSQL_PWD")
+    mysqlHost := os.Getenv("MYSQL_HOST")
+    mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
+    connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
+    db, err := sql.Open("mysql", connStr)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // トップページ (/) にアクセスが来たときのお返事
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintln(w, "Hello Hackathon Backend!")
+    })
+
+    // 既存 of /items の処理
     http.HandleFunc("/items", handler.GetItemsHandler(db))
 
     port := os.Getenv("PORT")

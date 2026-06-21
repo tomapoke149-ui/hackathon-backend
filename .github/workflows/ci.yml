@@ -1,0 +1,33 @@
+name: Python CI (FastAPI Test)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: クローンしたコードのチェックアウト
+      uses: actions/checkout@v4
+
+    - name: Python環境のセットアップ
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: 依存ライブラリのインストール
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install fastapi uvicorn pymysql pydantic pytest httpx starlette
+    - name: 単体テストの実行 (Pytest)
+      env:
+        MYSQL_USER: "root"
+        MYSQL_PWD: "password"
+        MYSQL_HOST: "localhost"
+        MYSQL_DATABASE: "test_db"
+      run: |
+        python3 -m pytest
